@@ -1,5 +1,7 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
+import { catchErrors } from 'src/utils/catchErrors';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -7,12 +9,14 @@ export class AuthService {
 
   async validateUser(email: string, pass: string): Promise<any> {
     try {
-      return await this.usersService.getUserByEmail(email);
+      const user = await this.usersService.getUserByEmail(email);
+      if (user && bcrypt.compare(user.password, pass)) {
+        const { password, ...result } = user;
+        return result;
+      }
+      throw new UnauthorizedException('Users or password are incorrect.');
     } catch (e) {
-      throw new HttpException(
-        'INTERNAL ERROR during fetching user',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      catchErrors(e);
     }
   }
 }
