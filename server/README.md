@@ -1,7 +1,5 @@
 # TODO
 
-## 1. Update create user class validator -> comparePassword must be the same as password
-
 ## 2. Create method to compare passwords
 
 ## 3. Make a signUp and login endpoints with logic
