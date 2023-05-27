@@ -1,18 +1,16 @@
 import React from "react";
 import { Outlet, useLoaderData } from "react-router-dom";
 import { InitialUserData } from "./index";
+import { AuthContextProvider } from "./context/AuthContext";
 
 function App() {
-  const token = useLoaderData() as InitialUserData;
-
-  console.log("token");
-  console.log(token);
+  const userInfo = useLoaderData() as InitialUserData;
 
   return (
-    <AuthContext>
-      <header></header>
+    <AuthContextProvider initialToken={userInfo.token}>
+      <header>{userInfo.userId}</header>
       <Outlet />
-    </AuthContext>
+    </AuthContextProvider>
   );
 }
 

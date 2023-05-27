@@ -19,7 +19,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    loader: async ({ request }) => {
+    loader: async () => {
       const token = window.localStorage.getItem("user_token");
 
       if (!token) return redirect("/login");
@@ -49,6 +49,26 @@ const router = createBrowserRouter([
   {
     element: <Login />,
     path: "/login",
+    loader: async () => {
+      const token = window.localStorage.getItem("user_token");
+
+      if (!token) return null;
+
+      const userProfile = await fetch(
+        `${process.env.REACT_APP_API_URL}/auth/profile`,
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+
+      if (!userProfile.ok) {
+        return null;
+      }
+
+      return redirect("/");
+    },
   },
 ]);
 
