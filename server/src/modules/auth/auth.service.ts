@@ -17,7 +17,7 @@ export class AuthService {
   ): Promise<Omit<User, 'password'> | null> {
     const user = await this.usersService.getUserByEmail(email);
 
-    if (user && bcrypt.compare(user.password, pass)) {
+    if (user && (await bcrypt.compare(pass, user.password))) {
       const { password, ...result } = user;
       return result;
     }
