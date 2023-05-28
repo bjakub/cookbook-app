@@ -9,6 +9,11 @@ import {
 import { Login } from "./pages/Login/Login";
 import App from "./App";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { CssBaseline } from "@mui/material";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 
 export interface IToken {
   access_token: string;
@@ -62,6 +67,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
+      <CssBaseline />
       <RouterProvider router={router} />
     </QueryClientProvider>
   </React.StrictMode>
