@@ -8,11 +8,11 @@ import {
 } from "react-router-dom";
 import { Login } from "./pages/Login/Login";
 import App from "./App";
+import { QueryClient, QueryClientProvider } from "react-query";
 
-export interface InitialUserData {
-  token: string;
-  role: "ADMIN" | "USER";
-  userId: string;
+export interface IToken {
+  access_token: string;
+  exp: number;
 }
 
 const router = createBrowserRouter([
@@ -20,50 +20,32 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     loader: async () => {
-      const token = window.localStorage.getItem("user_token");
+      const token: string | null = window.localStorage.getItem("user_token");
 
       if (!token) return redirect("/login");
 
-      const userProfile = await fetch(
-        `${process.env.REACT_APP_API_URL}/auth/profile`,
-        {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        }
-      );
+      const parsedToken: IToken = JSON.parse(token);
 
-      if (!userProfile.ok) {
-        return redirect("/login");
+      if (parsedToken.exp < Date.now()) {
+        window.localStorage.removeItem("user_token");
+        return redirect("/");
       }
 
-      const user: InitialUserData = await userProfile.json();
-
-      return {
-        token,
-        role: user.role,
-        userId: user.userId,
-      };
+      return parsedToken;
     },
   },
   {
     element: <Login />,
     path: "/login",
     loader: async () => {
-      const token = window.localStorage.getItem("user_token");
+      const token: string | null = window.localStorage.getItem("user_token");
 
       if (!token) return null;
 
-      const userProfile = await fetch(
-        `${process.env.REACT_APP_API_URL}/auth/profile`,
-        {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        }
-      );
+      const parsedToken: IToken = JSON.parse(token);
 
-      if (!userProfile.ok) {
+      if (parsedToken.exp < Date.now()) {
+        window.localStorage.removeItem("user_token");
         return null;
       }
 
@@ -72,12 +54,16 @@ const router = createBrowserRouter([
   },
 ]);
 
+const queryClient = new QueryClient();
+
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   </React.StrictMode>
 );
 
