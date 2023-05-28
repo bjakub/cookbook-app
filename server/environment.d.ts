@@ -5,6 +5,7 @@ declare global {
       DB_URI: string;
       SALT_WORK_FACTOR: string;
       JWT_SECRET: string;
+      JWT_TOKEN_EXPIRED_TIME_IN_SECONDS: string;
     }
   }
 }

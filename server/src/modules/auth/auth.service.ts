@@ -28,10 +28,18 @@ export class AuthService {
   login(user: any) {
     const { email, role, _id } = user._doc;
 
-    const payload = { email, role, sub: _id };
+    const payload = {
+      email,
+      role,
+      sub: _id,
+    };
+
+    const access_token = this.jwtService.sign(payload);
+    const exp = +process.env.JWT_TOKEN_EXPIRED_TIME_IN_SECONDS * 1000;
 
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token,
+      exp: Date.now() + exp,
     };
   }
 }
