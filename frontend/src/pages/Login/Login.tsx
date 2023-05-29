@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, FormBox, LoginHeading } from "./Login.styled";
-import { Button, TextField } from "@mui/material";
+import { Alert, Snackbar, TextField } from "@mui/material";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "react-query";
+import { LoadingButton } from "@mui/lab";
+import { loginUserAPI } from "../../api/loginUser.api";
 
-interface IFormValues {
+export interface IFormValues {
   email: string;
   password: string;
 }
@@ -20,28 +22,28 @@ const schema = yup.object({
   password: yup.string().required("This field is required!"),
 });
 
-const postLogin = async (formData: IFormValues) => {
-  return fetch(process.env.REACT_APP_API_URL + "/auth/login", {
-    method: "POST",
-    body: JSON.stringify({
-      email: formData.email,
-      password: formData.password,
-    }),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
-
 export const Login = () => {
   const navigate = useNavigate();
+
   const [error, setError] = useState<string | null>(null);
+  const [isErrorVisible, setIsErrorVisible] = useState<boolean>(false);
 
-  const mutation = useMutation(postLogin, {
+  const { mutate, isLoading } = useMutation(loginUserAPI, {
+    onMutate: () => {
+      setIsErrorVisible(false);
+    },
     onSuccess: async (fetchData) => {
-      if (!fetchData.ok) return;
-
       const userData = await fetchData.json();
+
+      if (!fetchData.ok) {
+        if (userData.message) {
+          setError(userData.message);
+          return setIsErrorVisible(true);
+        }
+
+        setError("There is some problem. Let's try again soon.");
+        return setIsErrorVisible(true);
+      }
 
       window.localStorage.setItem(
         "user_token",
@@ -54,8 +56,10 @@ export const Login = () => {
       return navigate("/");
     },
     onError: (error) => {
-      console.log("error");
-      console.log(error);
+      console.error(error);
+
+      setError("There is some problem. Let's try again soon.");
+      return setIsErrorVisible(true);
     },
   });
 
@@ -68,7 +72,7 @@ export const Login = () => {
   });
 
   const onSubmit: SubmitHandler<IFormValues> = async (formData) =>
-    mutation.mutate(formData);
+    mutate(formData);
 
   return (
     <Container>
@@ -105,10 +109,25 @@ export const Login = () => {
           )}
         />
 
-        <Button variant="outlined" type="submit" color="success">
+        <LoadingButton
+          variant="outlined"
+          type="submit"
+          color="inherit"
+          loading={isLoading}
+        >
           Login
-        </Button>
+        </LoadingButton>
       </FormBox>
+
+      <Snackbar
+        open={isErrorVisible}
+        autoHideDuration={6000}
+        onClose={() => setIsErrorVisible(false)}
+      >
+        <Alert severity="error" onClose={() => setIsErrorVisible(false)}>
+          {error}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
