@@ -1,6 +1,6 @@
-import { IFormValues } from "../pages/Login/Login";
+import { ILoginFormValues } from "../pages/Login/Login";
 
-export const loginUserAPI = async (formData: IFormValues) => {
+export const loginUserAPI = async (formData: ILoginFormValues) => {
   return fetch(process.env.REACT_APP_API_URL + "/auth/login", {
     method: "POST",
     body: JSON.stringify({

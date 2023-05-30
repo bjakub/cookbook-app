@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 const Container = styled.section`
   display: flex;
   height: 100vh;
+  padding: 0 10px;
   justify-content: center;
   align-items: center;
 `;
@@ -11,8 +12,9 @@ const FormBox = styled.form`
   display: flex;
   flex-direction: column;
   padding: 30px 20px;
-  width: 300px;
-  max-width: 300px;
+  width: 400px;
+  max-width: 400px;
+
   border: 5px solid #333;
   box-shadow: 5px 10px black;
 `;

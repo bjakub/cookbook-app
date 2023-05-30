@@ -1,32 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Container, FormBox, LoginHeading } from "./Login.styled";
-import { Alert, Snackbar, TextField } from "@mui/material";
+import { Container, FormBox } from "./Login.styled";
+import { Button, TextField, Typography } from "@mui/material";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "react-query";
 import { LoadingButton } from "@mui/lab";
 import { loginUserAPI } from "../../api/loginUser.api";
+import { DinnerDining } from "@mui/icons-material";
+import { Spacer } from "../../components/Spacer/Spacer";
+import { loginUserSchema } from "../../schemas/login-user.schema";
+import { useError } from "../../hooks/useError";
+import { SnackbarAlert } from "../../components/SnackbarAlert/SnackbarAlert";
 
-export interface IFormValues {
+export interface ILoginFormValues {
   email: string;
   password: string;
 }
 
-const schema = yup.object({
-  email: yup
-    .string()
-    .required("This field is required!")
-    .email("This field must be email!"),
-  password: yup.string().required("This field is required!"),
-});
-
 export const Login = () => {
   const navigate = useNavigate();
 
-  const [error, setError] = useState<string | null>(null);
-  const [isErrorVisible, setIsErrorVisible] = useState<boolean>(false);
+  const [error, isErrorVisible, handleError, setIsErrorVisible] =
+    useError<string>();
 
   const { mutate, isLoading } = useMutation(loginUserAPI, {
     onMutate: () => {
@@ -37,12 +33,10 @@ export const Login = () => {
 
       if (!fetchData.ok) {
         if (userData.message) {
-          setError(userData.message);
-          return setIsErrorVisible(true);
+          return handleError(userData.message);
         }
 
-        setError("There is some problem. Let's try again soon.");
-        return setIsErrorVisible(true);
+        return handleError("There is some problem. Let's try again soon.");
       }
 
       window.localStorage.setItem(
@@ -58,26 +52,39 @@ export const Login = () => {
     onError: (error) => {
       console.error(error);
 
-      setError("There is some problem. Let's try again soon.");
-      return setIsErrorVisible(true);
+      return handleError("There is some problem. Let's try again soon.");
     },
   });
 
-  const { control, handleSubmit } = useForm<IFormValues>({
+  const { control, handleSubmit } = useForm<ILoginFormValues>({
     defaultValues: {
       email: "",
       password: "",
     },
-    resolver: yupResolver(schema),
+    resolver: yupResolver(loginUserSchema),
   });
 
-  const onSubmit: SubmitHandler<IFormValues> = async (formData) =>
+  const onSubmit: SubmitHandler<ILoginFormValues> = async (formData) =>
     mutate(formData);
 
   return (
     <Container>
       <FormBox onSubmit={handleSubmit(onSubmit)} noValidate>
-        <LoginHeading>Cookbook login</LoginHeading>
+        <Typography
+          variant="h4"
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginBottom: "50px",
+            textAlign: "center",
+            fontWeight: "bold",
+          }}
+        >
+          Cook
+          <DinnerDining sx={{ margin: "0 10px" }} fontSize="large" />
+          Book
+        </Typography>
 
         <Controller
           name="email"
@@ -112,22 +119,26 @@ export const Login = () => {
         <LoadingButton
           variant="outlined"
           type="submit"
-          color="inherit"
+          color="success"
           loading={isLoading}
         >
           Login
         </LoadingButton>
+        <Spacer verticalSpace="30px 0" />
+        <Button
+          variant="outlined"
+          color="warning"
+          onClick={() => navigate("/register")}
+        >
+          Sign up
+        </Button>
       </FormBox>
 
-      <Snackbar
-        open={isErrorVisible}
-        autoHideDuration={6000}
+      <SnackbarAlert
+        isSnackbarVisible={isErrorVisible}
         onClose={() => setIsErrorVisible(false)}
-      >
-        <Alert severity="error" onClose={() => setIsErrorVisible(false)}>
-          {error}
-        </Alert>
-      </Snackbar>
+        errorMessage={error}
+      />
     </Container>
   );
 };
