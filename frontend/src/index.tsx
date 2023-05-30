@@ -17,6 +17,7 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import { SignUp } from "./pages/SignUp/SignUp";
 import { theme } from "./styles/theme";
+import { Home } from "./pages/Home/Home";
 
 export interface IToken {
   access_token: string;
@@ -36,11 +37,17 @@ const router = createBrowserRouter([
 
       if (parsedToken.exp < Date.now()) {
         window.localStorage.removeItem("user_token");
-        return redirect("/");
+        return redirect("/login");
       }
 
       return parsedToken;
     },
+    children: [
+      {
+        element: <Home />,
+        path: "home",
+      },
+    ],
   },
   {
     element: <Login />,
@@ -57,7 +64,7 @@ const router = createBrowserRouter([
         return null;
       }
 
-      return redirect("/");
+      return redirect("/home");
     },
   },
   {

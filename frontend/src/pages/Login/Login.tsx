@@ -8,10 +8,10 @@ import { useMutation } from "react-query";
 import { LoadingButton } from "@mui/lab";
 import { loginUserAPI } from "../../api/loginUser.api";
 import { DinnerDining } from "@mui/icons-material";
-import { Spacer } from "../../components/Spacer/Spacer";
+import { Spacer } from "../../components/shared/Spacer/Spacer";
 import { loginUserSchema } from "../../schemas/login-user.schema";
 import { useError } from "../../hooks/useError";
-import { SnackbarAlert } from "../../components/SnackbarAlert/SnackbarAlert";
+import { SnackbarAlert } from "../../components/shared/SnackbarAlert/SnackbarAlert";
 
 export interface ILoginFormValues {
   email: string;
@@ -45,7 +45,7 @@ export const Login = () => {
         })
       );
 
-      return navigate("/");
+      return navigate("/home");
     },
     onError: (error) => {
       console.error(error);

@@ -8,7 +8,7 @@ import { registerUserSchema } from "../../schemas/register-user.schema";
 import { useMutation } from "react-query";
 import { signUpUserAPI } from "../../api/signUpUser.api";
 import { useError } from "../../hooks/useError";
-import { SnackbarAlert } from "../../components/SnackbarAlert/SnackbarAlert";
+import { SnackbarAlert } from "../../components/shared/SnackbarAlert/SnackbarAlert";
 import { useNavigate } from "react-router-dom";
 
 export interface IRegisterFormValues {
@@ -60,7 +60,7 @@ export const SignUp = () => {
           })
         );
 
-        return navigate("/");
+        return navigate("/home");
       },
       onError: (error) => {
         console.error(error);
