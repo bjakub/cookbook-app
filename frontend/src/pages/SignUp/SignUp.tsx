@@ -43,23 +43,20 @@ export const SignUp = () => {
       onMutate: () => {
         setIsErrorVisible(false);
       },
-      onSuccess: async (data) => {
-        const userData = await data.json();
-        if (!data.ok) {
-          if (userData.error && userData.message) {
-            return handleError(userData.message);
+      onSuccess: async (fetchData) => {
+        if (fetchData.error) {
+          if (fetchData.message) {
+            return handleError(fetchData.message);
           }
 
-          return handleError(
-            "There is some problem with sign up the user. Try again later."
-          );
+          return handleError("There is some problem. Let's try again soon.");
         }
 
         window.localStorage.setItem(
           "user_token",
           JSON.stringify({
-            access_token: userData.access_token,
-            exp: userData.exp,
+            access_token: fetchData.access_token,
+            exp: fetchData.exp,
           })
         );
 

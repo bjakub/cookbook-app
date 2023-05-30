@@ -29,11 +29,9 @@ export const Login = () => {
       setIsErrorVisible(false);
     },
     onSuccess: async (fetchData) => {
-      const userData = await fetchData.json();
-
-      if (!fetchData.ok) {
-        if (userData.message) {
-          return handleError(userData.message);
+      if (fetchData.error) {
+        if (fetchData.message) {
+          return handleError(fetchData.message);
         }
 
         return handleError("There is some problem. Let's try again soon.");
@@ -42,8 +40,8 @@ export const Login = () => {
       window.localStorage.setItem(
         "user_token",
         JSON.stringify({
-          access_token: userData.access_token,
-          exp: userData.exp,
+          access_token: fetchData.access_token,
+          exp: fetchData.exp,
         })
       );
 

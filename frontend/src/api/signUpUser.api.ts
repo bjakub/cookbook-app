@@ -10,4 +10,4 @@ export const signUpUserAPI = (
     headers: {
       "Content-Type": "application/json",
     },
-  });
+  }).then((res) => res.json());

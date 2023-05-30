@@ -1,7 +1,7 @@
 import { ILoginFormValues } from "../pages/Login/Login";
 
-export const loginUserAPI = async (formData: ILoginFormValues) => {
-  return fetch(process.env.REACT_APP_API_URL + "/auth/login", {
+export const loginUserAPI = async (formData: ILoginFormValues) =>
+  fetch(process.env.REACT_APP_API_URL + "/auth/login", {
     method: "POST",
     body: JSON.stringify({
       email: formData.email,
@@ -10,5 +10,4 @@ export const loginUserAPI = async (formData: ILoginFormValues) => {
     headers: {
       "Content-Type": "application/json",
     },
-  });
-};
+  }).then((res) => res.json());
