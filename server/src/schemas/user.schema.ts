@@ -20,19 +20,14 @@ export class User {
   @Prop({
     required: true,
   })
-  @Prop()
   name: string;
 
-  @Prop({
-    required: true,
-  })
   @Prop()
   surname: string;
 
   @Prop({
     required: true,
   })
-  @Prop()
   role: UserRole;
 }
 

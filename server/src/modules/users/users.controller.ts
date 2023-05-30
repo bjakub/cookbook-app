@@ -27,6 +27,7 @@ export class UserController {
       }
 
       const createdUser = this.usersService.create(createUserDto);
+
       return createdUser;
     } catch (e) {
       catchErrors(e);
