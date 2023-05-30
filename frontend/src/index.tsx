@@ -14,7 +14,7 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import { Register } from "./pages/Register/Register";
+import { SignUp } from "./pages/SignUp/SignUp";
 
 export interface IToken {
   access_token: string;
@@ -59,8 +59,8 @@ const router = createBrowserRouter([
     },
   },
   {
-    element: <Register />,
-    path: "/register",
+    element: <SignUp />,
+    path: "/signUp",
   },
 ]);
 

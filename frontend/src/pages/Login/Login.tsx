@@ -128,7 +128,7 @@ export const Login = () => {
         <Button
           variant="outlined"
           color="warning"
-          onClick={() => navigate("/register")}
+          onClick={() => navigate("/signUp")}
         >
           Sign up
         </Button>

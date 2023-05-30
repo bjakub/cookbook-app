@@ -1,12 +1,12 @@
 import React from "react";
-import { Container, Form, ButtonsBox } from "./Register.styled";
+import { Container, Form, ButtonsBox } from "./SignUp.styled";
 import { Button, TextField, Typography } from "@mui/material";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { LoadingButton } from "@mui/lab";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { registerUserSchema } from "../../schemas/register-user.schema";
 import { useMutation } from "react-query";
-import { registerUserAPI } from "../../api/registerUser.api";
+import { signUpUserAPI } from "../../api/signUpUser.api";
 import { useError } from "../../hooks/useError";
 import { SnackbarAlert } from "../../components/SnackbarAlert/SnackbarAlert";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +19,7 @@ export interface IRegisterFormValues {
   surname: string;
 }
 
-export const Register = () => {
+export const SignUp = () => {
   const navigate = useNavigate();
 
   const [error, isErrorVisible, handleError, setIsErrorVisible] = useError<
@@ -38,7 +38,7 @@ export const Register = () => {
   });
 
   const { mutate, isLoading } = useMutation(
-    (formData: IRegisterFormValues) => registerUserAPI(formData, "USER"),
+    (formData: IRegisterFormValues) => signUpUserAPI(formData, "USER"),
     {
       onMutate: () => {
         setIsErrorVisible(false);
