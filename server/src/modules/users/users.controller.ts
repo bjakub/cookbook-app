@@ -1,5 +1,6 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Get,
   NotFoundException,
@@ -17,6 +18,14 @@ export class UserController {
   @Post()
   async createUser(@Body() createUserDto: CreateUserDto) {
     try {
+      const isUserExist = await this.usersService.getUserByEmail(
+        createUserDto.email,
+      );
+
+      if (isUserExist) {
+        throw new ConflictException('User with this email exists.');
+      }
+
       const createdUser = this.usersService.create(createUserDto);
       return createdUser;
     } catch (e) {
@@ -28,7 +37,10 @@ export class UserController {
   async getAllUsers() {
     try {
       const users = await this.usersService.getAllUsers();
-      if (users.length === 0) throw new NotFoundException('Users do not exist');
+
+      if (users.length === 0)
+        throw new NotFoundException('Users do not exist.');
+
       return users;
     } catch (e) {
       catchErrors(e);
