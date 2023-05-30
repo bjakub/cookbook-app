@@ -41,10 +41,18 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  getProfile(@Request() req) {
+  async getProfile(@Request() req) {
     const {
-      user: { userId, role },
+      user: { userId },
     } = req;
-    return { userId, role };
+
+    try {
+      const findUser = await this.usersService.getUserById(userId);
+      return {
+        name: findUser.name,
+      };
+    } catch (e) {
+      catchErrors(e);
+    }
   }
 }
