@@ -7,9 +7,4 @@ const Container = styled(SectionLayout)`
   align-items: center;
 `;
 
-const LogoBox = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-export { Container, LogoBox };
+export { Container };

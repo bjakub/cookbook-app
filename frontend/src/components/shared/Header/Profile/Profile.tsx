@@ -2,12 +2,12 @@ import React, { useContext } from "react";
 import { AuthContext } from "../../../../context/AuthContext";
 import { useQuery } from "react-query";
 import { getUserProfileAPI } from "../../../../api/getUserProfile.api";
-import { Box, Skeleton } from "@mui/material";
+import { Avatar, Box, Skeleton, Typography } from "@mui/material";
 
 export const Profile = () => {
   const { token } = useContext(AuthContext);
 
-  const { isLoading, data } = useQuery({
+  const { isLoading, isError, data } = useQuery({
     queryKey: ["user-profile"],
     queryFn: () => getUserProfileAPI(token),
     refetchOnWindowFocus: false,
@@ -26,5 +26,14 @@ export const Profile = () => {
       </Box>
     );
 
-  return <div>{data.name}</div>;
+  if (isError) return null;
+
+  return (
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Typography variant="body1" sx={{ marginRight: "20px" }}>
+        {data.name}
+      </Typography>
+      <Avatar sx={{ bgcolor: "black" }}>{data.name.slice(0, 1)}</Avatar>
+    </Box>
+  );
 };
